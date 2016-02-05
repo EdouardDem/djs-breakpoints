@@ -11,14 +11,14 @@ window.djs = window.djs || {};
  * Bind events to detect responsive breakpoints.
  * This object is "chainable"
  *
- * @see https://github.com/EdouardDem/djs-resize
+ * @see https://github.com/EdouardDem/djs-breakpoints
  * @requires djs.resize <https://github.com/EdouardDem/djs-resize>
  */
-breakpoints = {
+djs.breakpoints = {
 
 	/**
 	 * Used to store breakpoints values
-	 * Default values, should be overriden
+	 * Default values, should be overridden
 	 *
 	 * @private
 	 * @var {Object}
@@ -52,68 +52,144 @@ breakpoints = {
 	 */
 	_actualWidth: 0,
 	/**
+	 * Store the actual breakpoint
+	 *
+	 * @private
+	 * @var {String}
+	 */
+	_actualPoint: null,
+	/**
 	 * Namespace used to bind events
 	 *
 	 * @private
 	 * @var {String}
 	 */
-	_namespace: 'breakpoints',
+	_namespace: 'djs-breakpoints',
 	/**
 	 * jQuery body element
 	 *
 	 * @private
 	 * @var {Object}
 	 */
-	$body: null,
+	_$body: null,
 	/**
 	 * jQuery html+body element
 	 *
 	 * @private
 	 * @var {Object}
 	 */
-	$htmlBody: null,
+	_$htmlBody: null,
 	/**
 	 * jQuery window element
 	 *
 	 * @private
 	 * @var {Object}
 	 */
-	$window: null,
-	scrollBarWidth: 0,
+	_$window: null,
+	/**
+	 * Used to store the scroll bar width
+	 *
+	 * @private
+	 * @var {Integer}
+	 */
+	_scrollBarWidth: 0,
+	/**
+	 * Store the callbacks
+	 *
+	 * @private
+	 * @var {Object}
+	 */
+	_callbacks: {},
+	/**
+	 * Default tag to store callbacks
+	 *
+	 * @private
+	 * @var {String}
+	 */
+	_defaultTag: '__',
 
 	/**
 	 * Initialize the object
 	 *
-	 *
+	 * @return {Object}
 	 */
 	init: function () {
-		this.functions = {};
-		this.$body = $('body');
-		this.$htmlBody = $('html, body');
-		this.$window = $(window);
-		this.scrollBarWidth = this.getScrollBarWidth();
-		this._actualWidth = this.getWindowWidth();
-		this.setPoint();
-		this.bind();
+
+		// Get jQuery elements
+		this._$body = $('body');
+		this._$htmlBody = $('html, body');
+		this._$window = $(window);
+
+		// Define actual dimentsions
+		this._scrollBarWidth = this._getScrollBarWidth();
+		this._actualWidth = this._getWindowWidth();
+
+		// Refresh cuurent point
+		this._setPoint();
+
+		// Bind events
+		this._bind();
+
+		return this;
 	},
 	/**
-	 * Bind les events resize avec l'appel des breakpoints
+	 * Destroy the object
+	 *
+	 * @return {Object}
 	 */
-	bind: function () {
-		resize.bind(this._namespace, this.run.bind(this), resize.stacks.core);
+	destroy: function () {
+
+		// Unbind events
+		this._unbind();
+
+		return this;
+	},
+
+	/**
+	 * Bind the window resize event with djs.resize
+	 * @see https://github.com/EdouardDem/djs-resize
+	 *
+	 * @private
+	 * @return {Object}
+	 */
+	_bind: function () {
+
+		// Use djs.resize
+		// Add self callback to the first stack (core)
+		djs.resize.bind(this._namespace, this._run.bind(this), djs.resize.stacks.core);
+
+		return this;
 	},
 	/**
-	 * Unbind les events resize
+	 * Unbind from the window resize event
+	 * @see https://github.com/EdouardDem/djs-resize
+	 *
+	 * @private
+	 * @return {Object}
 	 */
-	unbind: function () {
-		resize.unbind(this._namespace, resize.stacks.core);
+	_unbind: function () {
+
+		// Use djs.resize
+		djs.resize.unbind(this._namespace, djs.resize.stacks.core);
+
+		return this;
 	},
 	/**
-	 * Appelle les fonctions de breakpoints après un resize
+	 * Runs callbacks after a breakpoints has been passed through.
+	 * Only if callbacks refers to this breakpoint in this sens.
+	 *
+	 * @private
+	 * @return {Object}
 	 */
-	run: function () {
-		var w = this.getWindowWidth();
+	_run: function () {
+
+		// Get actual window width
+		var w = this._getWindowWidth();
+
+		// Define the sens regarding to the last calculation
 		var sens = w < this._actualWidth ? 'down' : 'up';
+
+		// Push and order points that have been passed through
 		var points = [];
 		if (sens == 'up') {
 			$.each(this._values, function (index, value) {
@@ -125,63 +201,108 @@ breakpoints = {
 			}.bind(this));
 			points.reverse();
 		}
-		this._actualWidth = w;
-		this.setPoint();
 
-		//Run functions
+		// Store the actual width
+		this._actualWidth = w;
+
+		// Define current breakpoint
+		this._setPoint();
+
+		// Run callbacks for catched breakpoints (if any)
 		for (var i = 0; i < points.length; i++) {
+
+			// Point name
 			var point = points[i];
-			if (this._debug) console.log('[breakpoints] ' + point + '-' + sens);
-			if (!this.functions[point]) continue;
-			if (!this.functions[point][sens]) continue;
-			$.each(this.functions[point][sens], function (index, value) {
+
+			//	Debug
+			if (this._debug) console.log('[djs.breakpoints] ' + point + '-' + sens);
+
+			// Check if a callback is defined
+			if (!this._callbacks[point]) continue;
+			if (!this._callbacks[point][sens]) continue;
+
+			// If any, runs every callbacks in every tags
+			$.each(this._callbacks[point][sens], function (index, value) {
 				for (var j = 0; j < value.length; j++) {
 					value[j]();
 				}
 			});
 		}
+
+		return this;
 	},
 	/**
-	 * Ajoute un callback
+	 * Add a callback to a breakpoint for a sens
 	 *
-	 * @param {String} value        Le breakpoint à détecters
-	 * @param {String} sens            Le sens de resize
-	 * @param {Object} _function    Le callback
-	 * @param {String} tag            Optionnel, un tag identifiant la fonction
+	 * @param {String} value		The breakpoint to detect
+	 * @param {String} sens         The sens to detect ('up' or 'down')
+	 * @param {Object} callback		The callback
+	 * @param {String} tag			Optional. A tag to store the function in a special group
+	 * @return {Object}
 	 */
-	add: function (value, sens, _function, tag) {
-		if (tag == null) tag = '__';
-		if (!this.functions[value]) this.functions[value] = {};
-		if (!this.functions[value][sens]) this.functions[value][sens] = {};
-		if (!this.functions[value][sens][tag]) this.functions[value][sens][tag] = [];
-		this.functions[value][sens][tag].push(_function);
+	add: function (value, sens, callback, tag) {
+
+		// If no tag is defined, used default tag
+		if (tag == null) tag = this._defaultTag;
+
+		// Create path to store callback
+		if (!this._callbacks[value]) this._callbacks[value] = {};
+		if (!this._callbacks[value][sens]) this._callbacks[value][sens] = {};
+		if (!this._callbacks[value][sens][tag]) this._callbacks[value][sens][tag] = [];
+
+		// Push the callback
+		this._callbacks[value][sens][tag].push(callback);
+
+		return this;
 	},
 	/**
-	 * Supprime un callback
+	 * Remove a callback from a breakpoint and a sens
 	 *
-	 * @param {String} value        Le breakpoint à détecters
-	 * @param {String} sens            Le sens de resize
-	 * @param {String} tag            Optionnel, un tag identifiant la fonction
+	 * @param {String} value		The breakpoint to detect
+	 * @param {String} sens         The sens to detect ('up' or 'down')
+	 * @param {String} tag			Optional. A tag, if the function in a special group
+	 * @return {Object}
 	 */
 	remove: function (value, sens, tag) {
-		if (tag == null) tag = '__';
-		if (!this.functions[value]) return;
-		if (!this.functions[value][sens]) return;
-		if (!this.functions[value][sens][tag]) return;
-		delete this.functions[value][sens][tag];
+
+		// If no tag is defined, used default tag
+		if (tag == null) tag = this._defaultTag;
+
+		// Checks if path to storage exists
+		if (!this._callbacks[value]) return;
+		if (!this._callbacks[value][sens]) return;
+		if (!this._callbacks[value][sens][tag]) return;
+
+		// Delete the callback
+		delete this._callbacks[value][sens][tag];
+
+		return this;
 	},
 	/**
-	 * Redefini le point courant
+	 * Define current breakpoint
+	 *
+	 * @private
+	 * @return {Object}
 	 */
-	setPoint: function () {
+	_setPoint: function () {
+
+		// Vars
 		var point = null;
 		var first = null;
+
+		// Parse all points and store the last smaller than window width
 		$.each(this._values, function (index, value) {
 			if (first == null) first = index;
 			if (this._actualWidth >= value) point = index;
 		}.bind(this));
+
+		// Fallback if nothing found
 		if (point == null) point = first;
-		this.actualPoint = point;
+
+		// Store breakpoint
+		this._actualPoint = point;
+
+		return this;
 	},
 	/**
 	 * Check the current breakpoint
@@ -190,12 +311,15 @@ breakpoints = {
 	 * @return {Boolean}
 	 */
 	is: function (value) {
+
 		// Split the value, for multiple value
 		var values = value.split(',');
+
 		// Compare values with actual point
 		for (var i = 0; i < values.length; i++) {
-			if (values[i].trim() == this.actualPoint) return true;
+			if (values[i].trim() == this._actualPoint) return true;
 		}
+
 		// If nothing found, return false
 		return false;
 	},
@@ -206,11 +330,15 @@ breakpoints = {
 	 * @return {String}				The list, joined by ','
 	 */
 	to: function (value) {
+
+		// Enqueue points to value
 		var out = [];
 		$.each(this._values, function (index, v) {
 			out.push(index);
 			if (index == value) return false;
 		});
+
+		// Return points names joined with ','
 		return out.join(', ');
 	},
 	/**
@@ -220,12 +348,16 @@ breakpoints = {
 	 * @return {String}				The list, joined by ','
 	 */
 	from: function (value) {
+
+		// Enqueue points starting at value
 		var out = [];
 		var started = false;
 		$.each(this._values, function (index, v) {
 			if (index == value) started = true;
 			if (started) out.push(index);
 		});
+
+		// Return points names joined with ','
 		return out.join(', ');
 	},
 	/**
@@ -234,41 +366,57 @@ breakpoints = {
 	 * @return {String}
 	 */
 	current: function () {
-		return this.actualPoint;
+		return this._actualPoint;
 	},
 
 
 	/**
-	 * Retourne la largeur de la scrollbar
+	 * Get the scroll bar width
 	 *
+	 * @private
 	 * @return {Integer}
 	 */
-	getScrollBarWidth: function () {
-		this.$htmlBody.css('overflow', 'scroll');
-		var w1 = this.$body.outerWidth();
-		this.$htmlBody.css('overflow', 'hidden');
-		var w2 = this.$body.outerWidth();
-		this.$htmlBody.css('overflow', '');
+	_getScrollBarWidth: function () {
+
+		// Force scroll bar on body and get width
+		this._$htmlBody.css('overflow', 'scroll');
+		var w1 = this._$body.outerWidth();
+
+		// Force hidden scroll bar on body and get width
+		this._$htmlBody.css('overflow', 'hidden');
+		var w2 = this._$body.outerWidth();
+
+		// Restore body styles
+		this._$htmlBody.css('overflow', '');
+
+		// Return comparaison
 		return (w2 - w1);
 	},
 	/**
-	 * Détecte si le body a une scroll bar
+	 * Detect if the body has a scr0ll bar
 	 *
+	 * @private
 	 * @return {Boolean}
 	 */
-	bodyHasScrollbar: function () {
-		return this.$body.height() > this.$window.height();
+	_bodyHasScrollbar: function () {
+		// Compare body and window width
+		return this._$body.height() > this._$window.height();
 	},
 	/**
-	 * Retourne la largeur de la fenêtre
+	 * Returns the window width
 	 *
-	 * @param {Boolean} asMediaQuery (default : true)
+	 * @private
+	 * @param {Boolean}		asMediaQuery (default : true)
 	 * @return {Boolean}
 	 */
-	getWindowWidth: function (asMediaQuery) {
+	_getWindowWidth: function (asMediaQuery) {
+
+		// Default value for asMediaQuery
 		if (asMediaQuery == null) asMediaQuery = true;
-		return (asMediaQuery && this._dealWithScrollbar && this.bodyHasScrollbar()) ?
-		this.$window.width() + this.scrollBarWidth :
-			this.$window.width();
+
+		// Returns the window width with or without the scroll bar
+		return (asMediaQuery && this._dealWithScrollbar && this._bodyHasScrollbar()) ?
+		this._$window.width() + this._scrollBarWidth :
+			this._$window.width();
 	}
 };
