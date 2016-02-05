@@ -1,0 +1,28 @@
+{
+  "name": "djs-breakpoints",
+  "version": "0.1.0",
+  "description": "JavaScript library to manage responsive breakpoints events",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://EdouardDem@github.com/EdouardDem/djs-breakpoints.git"
+  },
+  "author": "Edouard Demotes-Mainard",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/EdouardDem/djs-breakpoints/issues"
+  },
+  "homepage": "https://github.com/EdouardDem/djs-breakpoints#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-copy": "^0.8.2",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-uglify": "^0.11.0"
+  }
+}

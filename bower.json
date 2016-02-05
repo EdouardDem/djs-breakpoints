@@ -1,0 +1,32 @@
+{
+  "name": "djs-breakpoints",
+  "description": "JavaScript library to manage responsive breakpoints events",
+  "main": [
+    "dist/djs-breakpoints.js",
+    "dist/djs-breakpoints.min.js"
+  ],
+  "authors": [
+    "Edouard Demotes-Mainard"
+  ],
+  "license": "https://opensource.org/licenses/BSD-2-Clause",
+  "keywords": [
+    "responsive",
+    "resize",
+    "callback"
+  ],
+  "homepage": "https://github.com/EdouardDem/djs-breakpoints",
+  "moduleType": [
+    "globals"
+  ],
+  "dependencies": {
+    "jquery": "^2.0.0",
+    "djs-resize": "^0.1.0"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
