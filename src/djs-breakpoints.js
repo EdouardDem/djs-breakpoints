@@ -111,9 +111,13 @@ djs.breakpoints = {
 	/**
 	 * Initialize the object
 	 *
+	 * @param {Object} points
 	 * @return {Object}
 	 */
-	init: function () {
+	init: function (points) {
+
+		// Set breakpoints
+		this._values = points;
 
 		// Get jQuery elements
 		this._$body = $('body');
