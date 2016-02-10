@@ -22,6 +22,7 @@ runTests = function () {
     //----------------------------------------------
     // Init resize object
     djs.resize.init();
+    djs.resize.delay(200);
 
     //----------------------------------------------
     // Size tracker
@@ -36,8 +37,8 @@ runTests = function () {
     djs.breakpoints.init({
         xs: 0,
         sm: 600,
-        md: 960,
-        lg: 1240
+        md: 900,
+        lg: 1200
     });
 
     //----------------------------------------------
@@ -45,11 +46,35 @@ runTests = function () {
     djs.breakpoints
         .add('md', 'up', function () {
             displayLog('Passed through medium up.');
-        }, 'md-up-1')
+        }, 'stack-1')
         .add('md', 'down', function () {
             displayLog('Passed through medium down.');
-        }, 'md-up-1');
+        }, 'stack-1');
+    // Add another callback
+    djs.breakpoints
+        .add('sm', 'up', function () {
+            displayLog('Passed through small up.');
+        }, 'stack-1')
+        .add('sm', 'down', function () {
+            djs.breakpoints.remove('lg', 'up', 'stack-1');
+            displayLog('Passed through small down. Removed "lg down" callbacks.');
+        });
 
+
+    djs.breakpoints
+        .add('lg', 'up', function () {
+            displayLog('Passed through large up. This callback will be removed when passing "small down".');
+        }, 'stack-1')
+
+
+    //----------------------------------------------
+    // Starts displayed tests
+    displayLog(" ");
+
+    //----------------------------------------------
+    // Test states list
+    displayLog('To medium, points are : ' + djs.breakpoints.to('md'));
+    displayLog('From small, points are : ' + djs.breakpoints.from('sm'));
 
     //----------------------------------------------
     // Test state
@@ -59,6 +84,10 @@ runTests = function () {
     if (djs.breakpoints.is(djs.breakpoints.from('md'))) {
         displayLog('Greater than medium.');
     }
+
+    //----------------------------------------------
+    // Ends displayed tests
+    displayLog(" ");
 
 };
 /**
