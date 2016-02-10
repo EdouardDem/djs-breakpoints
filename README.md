@@ -85,6 +85,13 @@ djs.breakpoints.add('lg', 'up', function () {
 djs.breakpoints.remove('lg', 'up', 'ns-1');
 ```
 
+### Aliases
+
+In order to write less code, you can use the aliases `up` and `down`:
+
+- `djs.breakpoints.up('lg', callback)` is equivalent to `djs.breakpoints.add('lg', 'up', callback)`
+- `djs.breakpoints.down('lg', callback)` is equivalent to `djs.breakpoints.add('lg', 'down', callback)`
+
 ### Testing the state
 
 If you want to know the actual point, use `current`:
@@ -93,11 +100,23 @@ If you want to know the actual point, use `current`:
 console.log( djs.breakpoints.current() );
 ```
 
+To check the actual state against a min or max value, do this:
+
+```javascript
+if (djs.breakpoints.max('sm')) {
+    // If actual point is 'xs' or 'sm'
+}
+
+if (djs.breakpoints.min('md')) {
+    // If actual point is 'md' or 'lg'
+}
+```
+
 If you want to test actual state over one or many breakpoints, use `is`:
 
 ```javascript
-if (djs.breakpoints.is('xs, sm, md')) {
-    // If actual point is 'xs', 'sm' or 'md'
+if (djs.breakpoints.is('xs, lg')) {
+    // If actual point is 'xs' or 'lg'
 }
 ```
 
@@ -126,18 +145,18 @@ djs.breakpoints.init({
 
 // Add callbacks arround a point
 djs.breakpoints
-    .add('md', 'up', function () {
+    .up('md', function () {
         // Code ...
     })
-    .add('md', 'down', function () {
+    .down('md', function () {
         // Code ...
     });
     
 // On init call some functions
-if (djs.breakpoints.is("xs, sm")) {
-    // Code if "xs" or "sm"
-} else {
+if (djs.breakpoints.min('md')) {
     // Code if "md" or more
+} else {
+    // Code if "xs" or "sm"
 }
 ```
 

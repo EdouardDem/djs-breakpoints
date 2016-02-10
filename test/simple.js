@@ -52,10 +52,10 @@ runTests = function () {
         }, 'stack-1');
     // Add another callback
     djs.breakpoints
-        .add('sm', 'up', function () {
+        .up('sm', function () {
             displayLog('Passed through small up.');
         }, 'stack-1')
-        .add('sm', 'down', function () {
+        .down('sm', function () {
             djs.breakpoints.remove('lg', 'up', 'stack-1');
             displayLog('Passed through small down. Removed "lg down" callbacks.');
         });
@@ -78,11 +78,14 @@ runTests = function () {
 
     //----------------------------------------------
     // Test state
-    if (djs.breakpoints.is(djs.breakpoints.to('sm'))) {
+    if (djs.breakpoints.max('sm')) {
         displayLog('Smaller than medium.');
     }
-    if (djs.breakpoints.is(djs.breakpoints.from('md'))) {
+    if (djs.breakpoints.min('md')) {
         displayLog('Greater than medium.');
+    }
+    if (djs.breakpoints.is('sm, lg')) {
+        displayLog('Is "small" or "large".');
     }
 
     //----------------------------------------------
