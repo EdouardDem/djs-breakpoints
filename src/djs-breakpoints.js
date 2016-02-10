@@ -262,6 +262,28 @@ djs.breakpoints = {
 		return this;
 	},
 	/**
+	 * Alias for add(point, 'up', callback, tag)
+	 *
+	 * @param {String} value		The breakpoint to detect
+	 * @param {Object} callback		The callback
+	 * @param {String} tag			Optional. A tag to store the function in a special group
+	 * @return {Object}
+	 */
+	up: function (value, callback, tag) {
+		return this.add(value, 'up', callback, tag);
+	},
+	/**
+	 * Alias for add(point, 'up', callback, tag)
+	 *
+	 * @param {String} value		The breakpoint to detect
+	 * @param {Object} callback		The callback
+	 * @param {String} tag			Optional. A tag to store the function in a special group
+	 * @return {Object}
+	 */
+	down: function (value, callback, tag) {
+		return this.add(value, 'down', callback, tag);
+	},
+	/**
 	 * Remove a callback from a breakpoint and a sens
 	 *
 	 * @param {String} value		The breakpoint to detect
