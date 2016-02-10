@@ -85,6 +85,13 @@ djs.breakpoints.add('lg', 'up', function () {
 djs.breakpoints.remove('lg', 'up', 'ns-1');
 ```
 
+### Aliases
+
+In order to write less code, you can use the aliases `up` and `down`:
+
+- `djs.breakpoints.up('lg', callback)` is equivalent to `djs.breakpoints.add('lg', 'up', callback)`
+- `djs.breakpoints.down('lg', callback)` is equivalent to `djs.breakpoints.add('lg', 'down', callback)`
+
 ### Testing the state
 
 If you want to know the actual point, use `current`:
@@ -138,18 +145,18 @@ djs.breakpoints.init({
 
 // Add callbacks arround a point
 djs.breakpoints
-    .add('md', 'up', function () {
+    .up('md', function () {
         // Code ...
     })
-    .add('md', 'down', function () {
+    .down('md', function () {
         // Code ...
     });
     
 // On init call some functions
-if (djs.breakpoints.max('sm')) {
-    // Code if "xs" or "sm"
-} else {
+if (djs.breakpoints.min('md')) {
     // Code if "md" or more
+} else {
+    // Code if "xs" or "sm"
 }
 ```
 

@@ -262,6 +262,28 @@ djs.breakpoints = {
 		return this;
 	},
 	/**
+	 * Alias for add(point, 'up', callback, tag)
+	 *
+	 * @param {String} value		The breakpoint to detect
+	 * @param {Object} callback		The callback
+	 * @param {String} tag			Optional. A tag to store the function in a special group
+	 * @return {Object}
+	 */
+	up: function (value, callback, tag) {
+		return this.add(value, 'up', callback, tag);
+	},
+	/**
+	 * Alias for add(point, 'up', callback, tag)
+	 *
+	 * @param {String} value		The breakpoint to detect
+	 * @param {Object} callback		The callback
+	 * @param {String} tag			Optional. A tag to store the function in a special group
+	 * @return {Object}
+	 */
+	down: function (value, callback, tag) {
+		return this.add(value, 'down', callback, tag);
+	},
+	/**
 	 * Remove a callback from a breakpoint and a sens
 	 *
 	 * @param {String} value		The breakpoint to detect
@@ -328,6 +350,28 @@ djs.breakpoints = {
 
 		// If nothing found, return false
 		return false;
+	},
+	/**
+	 * Check if the current breakpoint is this value or less
+	 *
+	 * @param {String} value        Expected breakpoint
+	 * @return {Boolean}
+	 */
+	max: function (value) {
+
+		// Get the values under and test
+		return this.is(this.to(value));
+	},
+	/**
+	 * Check if the current breakpoint is this value or more
+	 *
+	 * @param {String} value        Expected breakpoint
+	 * @return {Boolean}
+	 */
+	min: function (value) {
+
+		// Get the values over and test
+		return this.is(this.from(value));
 	},
 	/**
 	 * Returns the points list form the first value to "value"

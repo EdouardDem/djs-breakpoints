@@ -52,10 +52,10 @@ runTests = function () {
         }, 'stack-1');
     // Add another callback
     djs.breakpoints
-        .add('sm', 'up', function () {
+        .up('sm', function () {
             displayLog('Passed through small up.');
         }, 'stack-1')
-        .add('sm', 'down', function () {
+        .down('sm', function () {
             djs.breakpoints.remove('lg', 'up', 'stack-1');
             displayLog('Passed through small down. Removed "lg down" callbacks.');
         });
