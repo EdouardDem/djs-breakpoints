@@ -273,7 +273,7 @@ djs.breakpoints = {
 		return this.add(value, 'up', callback, tag);
 	},
 	/**
-	 * Alias for add(point, 'up', callback, tag)
+	 * Alias for add(point, 'down', callback, tag)
 	 *
 	 * @param {String} value		The breakpoint to detect
 	 * @param {Object} callback		The callback
