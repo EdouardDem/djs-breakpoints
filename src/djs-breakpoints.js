@@ -111,7 +111,7 @@ djs.breakpoints = {
 	/**
 	 * Initialize the object
 	 *
-	 * @param {Object} points (optionnal)
+	 * @param {Object} points (optional)
 	 * @return {Object}
 	 */
 	init: function (points) {
@@ -126,11 +126,11 @@ djs.breakpoints = {
 		this._$htmlBody = $('html, body');
 		this._$window = $(window);
 
-		// Define actual dimentsions
+		// Define actual dimensions
 		this._scrollBarWidth = this._getScrollBarWidth();
 		this._actualWidth = this._getWindowWidth();
 
-		// Refresh cuurent point
+		// Refresh current point
 		this._setPoint();
 
 		// Bind events
@@ -395,7 +395,7 @@ djs.breakpoints = {
 		// Restore body styles
 		this._$htmlBody.css('overflow', '');
 
-		// Return comparaison
+		// Returns difference
 		return (w2 - w1);
 	},
 	/**
