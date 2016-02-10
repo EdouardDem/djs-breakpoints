@@ -78,11 +78,14 @@ runTests = function () {
 
     //----------------------------------------------
     // Test state
-    if (djs.breakpoints.is(djs.breakpoints.to('sm'))) {
+    if (djs.breakpoints.max('sm')) {
         displayLog('Smaller than medium.');
     }
-    if (djs.breakpoints.is(djs.breakpoints.from('md'))) {
+    if (djs.breakpoints.min('md')) {
         displayLog('Greater than medium.');
+    }
+    if (djs.breakpoints.is('sm, lg')) {
+        displayLog('Is "small" or "large".');
     }
 
     //----------------------------------------------

@@ -330,6 +330,28 @@ djs.breakpoints = {
 		return false;
 	},
 	/**
+	 * Check if the current breakpoint is this value or less
+	 *
+	 * @param {String} value        Expected breakpoint
+	 * @return {Boolean}
+	 */
+	max: function (value) {
+
+		// Get the values under and test
+		return this.is(this.to(value));
+	},
+	/**
+	 * Check if the current breakpoint is this value or more
+	 *
+	 * @param {String} value        Expected breakpoint
+	 * @return {Boolean}
+	 */
+	min: function (value) {
+
+		// Get the values over and test
+		return this.is(this.from(value));
+	},
+	/**
 	 * Returns the points list form the first value to "value"
 	 *
 	 * @param {String} value        Expected breakpoint

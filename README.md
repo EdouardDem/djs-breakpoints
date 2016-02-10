@@ -93,11 +93,23 @@ If you want to know the actual point, use `current`:
 console.log( djs.breakpoints.current() );
 ```
 
+To check the actual state against a min or max value, do this:
+
+```javascript
+if (djs.breakpoints.max('sm')) {
+    // If actual point is 'xs' or 'sm'
+}
+
+if (djs.breakpoints.min('md')) {
+    // If actual point is 'md' or 'lg'
+}
+```
+
 If you want to test actual state over one or many breakpoints, use `is`:
 
 ```javascript
-if (djs.breakpoints.is('xs, sm, md')) {
-    // If actual point is 'xs', 'sm' or 'md'
+if (djs.breakpoints.is('xs, lg')) {
+    // If actual point is 'xs' or 'lg'
 }
 ```
 
@@ -134,7 +146,7 @@ djs.breakpoints
     });
     
 // On init call some functions
-if (djs.breakpoints.is("xs, sm")) {
+if (djs.breakpoints.max('sm')) {
     // Code if "xs" or "sm"
 } else {
     // Code if "md" or more
