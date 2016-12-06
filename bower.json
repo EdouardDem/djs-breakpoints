@@ -20,7 +20,8 @@
   ],
   "dependencies": {
     "jquery": "^2.0.0",
-    "djs-resize": "^0.1.0"
+    "djs-resize": "^0.1.0",
+    "djs-ui-tools": "^0.1.0"
   },
   "ignore": [
     "**/.*",
