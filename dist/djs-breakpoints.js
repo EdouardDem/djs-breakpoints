@@ -12,6 +12,7 @@ window.djs = window.djs || {};
  * This object is "chainable"
  *
  * @see https://github.com/EdouardDem/djs-breakpoints
+ * @requires djs.resize <https://github.com/EdouardDem/djs-ui-tools>
  * @requires djs.resize <https://github.com/EdouardDem/djs-resize>
  */
 djs.breakpoints = {
