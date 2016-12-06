@@ -66,34 +66,6 @@ djs.breakpoints = {
 	 */
 	_namespace: 'djs-breakpoints',
 	/**
-	 * jQuery body element
-	 *
-	 * @private
-	 * @var {Object}
-	 */
-	_$body: null,
-	/**
-	 * jQuery html+body element
-	 *
-	 * @private
-	 * @var {Object}
-	 */
-	_$htmlBody: null,
-	/**
-	 * jQuery window element
-	 *
-	 * @private
-	 * @var {Object}
-	 */
-	_$window: null,
-	/**
-	 * Used to store the scroll bar width
-	 *
-	 * @private
-	 * @var {Integer}
-	 */
-	_scrollBarWidth: 0,
-	/**
 	 * Store the callbacks
 	 *
 	 * @private
@@ -121,14 +93,8 @@ djs.breakpoints = {
 			this._values = points;
 		}
 
-		// Get jQuery elements
-		this._$body = $('body');
-		this._$htmlBody = $('html, body');
-		this._$window = $(window);
-
 		// Define actual dimensions
-		this._scrollBarWidth = this._getScrollBarWidth();
-		this._actualWidth = this._getWindowWidth();
+		this._actualWidth = djs.tools.ui.getWindowWidth();
 
 		// Refresh current point
 		this._setPoint();
@@ -190,7 +156,7 @@ djs.breakpoints = {
 	_run: function () {
 
 		// Get actual window width
-		var w = this._getWindowWidth();
+		var w = djs.tools.ui.getWindowWidth();
 
 		// Define the sens regarding to the last calculation
 		var sens = w < this._actualWidth ? 'down' : 'up';
@@ -417,56 +383,5 @@ djs.breakpoints = {
 	 */
 	current: function () {
 		return this._actualPoint;
-	},
-
-
-	/**
-	 * Get the scroll bar width
-	 *
-	 * @private
-	 * @return {Integer}
-	 */
-	_getScrollBarWidth: function () {
-
-		// Force scroll bar on body and get width
-		this._$htmlBody.css('overflow', 'scroll');
-		var w1 = this._$body.outerWidth();
-
-		// Force hidden scroll bar on body and get width
-		this._$htmlBody.css('overflow', 'hidden');
-		var w2 = this._$body.outerWidth();
-
-		// Restore body styles
-		this._$htmlBody.css('overflow', '');
-
-		// Returns difference
-		return (w2 - w1);
-	},
-	/**
-	 * Detect if the body has a scr0ll bar
-	 *
-	 * @private
-	 * @return {Boolean}
-	 */
-	_bodyHasScrollbar: function () {
-		// Compare body and window width
-		return this._$body.height() > this._$window.height();
-	},
-	/**
-	 * Returns the window width
-	 *
-	 * @private
-	 * @param {Boolean}		asMediaQuery (default : true)
-	 * @return {Boolean}
-	 */
-	_getWindowWidth: function (asMediaQuery) {
-
-		// Default value for asMediaQuery
-		if (asMediaQuery == null) asMediaQuery = true;
-
-		// Returns the window width with or without the scroll bar
-		return (asMediaQuery && this._dealWithScrollbar && this._bodyHasScrollbar()) ?
-		this._$window.width() + this._scrollBarWidth :
-			this._$window.width();
 	}
 };
